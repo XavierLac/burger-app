@@ -5,24 +5,24 @@ import ContactData from './ContactData/ContactData';
 
 class Checkout extends React.Component {
   state = {
-    ingredients: {
-      salad: 1,
-      meat: 1,
-      cheese: 1,
-      bacon: 1
-    }
+    ingredients: null,
+    price: 0
   };
 
-  componentDidMount() {
+  componentWillMount() {
     // Extration des paramètres dans l'URL
     const query = new URLSearchParams(this.props.location.search);
     const ingredients = {};
+    let price = 0;
     for (let param of query.entries()) {
       // Chaque param a un format ['salad', '1']
-      ingredients[param[0]] = +param[1];
-      console.log((ingredients[param[0]] = +param[1]));
+      if (param[0] === 'price') {
+        price = param[1];
+      } else {
+        ingredients[param[0]] = +param[1];
+      }
     }
-    this.setState({ ingredients: ingredients });
+    this.setState({ ingredients: ingredients, totalPrice: price });
   }
 
   CheckoutCancelledHandler = () => {
@@ -43,7 +43,15 @@ class Checkout extends React.Component {
         />
         <Route
           path={this.props.match.path + '/contact-data'}
-          component={ContactData}
+          // Précédemment, component={ContactData}. Le fait de l'afficher manuellement avec render={} permet de passer des propriétés comme ingredients
+          // On passe les props afin de pouvoir accéder à history dans ContactData. Render intègre la propriété history dans ses props
+          render={props => (
+            <ContactData
+              ingredients={this.state.ingredients}
+              price={this.state.totalPrice}
+              {...props}
+            />
+          )}
         />
       </div>
     );
