@@ -7,11 +7,52 @@ import Input from '../../../components/UI/Input/Input';
 
 class ContactData extends React.Component {
   state = {
-    name: '',
-    email: '',
-    address: {
-      street: '',
-      postalCode: ''
+    orderForm: {
+      name: {
+        elementType: 'input',
+        elementConfig: {
+          type: 'text',
+          placeholder: 'Your Name'
+        }
+      },
+      street: {
+        elementType: 'input',
+        elementConfig: {
+          type: 'text',
+          placeholder: 'Street'
+        }
+      },
+      zipCode: {
+        elementType: 'input',
+        elementConfig: {
+          type: 'text',
+          placeholder: 'ZIP Code'
+        }
+      },
+      country: {
+        elementType: 'input',
+        elementConfig: {
+          type: 'text',
+          placeholder: 'Country'
+        }
+      },
+      email: {
+        elementType: 'input',
+        elementConfig: {
+          type: 'text',
+          placeholder: 'Your mail'
+        }
+      },
+      deliveryMethod: {
+        elementType: 'select',
+        elementConfig: {
+          options: [
+            { value: 'fastest', displayValue: 'Fastest' },
+            { value: 'cheapest', displayValue: 'Cheapest' }
+          ]
+        },
+        value: ''
+      }
     },
     loading: false
   };
@@ -48,12 +89,7 @@ class ContactData extends React.Component {
   render() {
     let form = (
       <form>
-        <Input
-          inputtype="input"
-          type="text"
-          name="name"
-          placeholder="Your Name"
-        />
+        <Input elementType="..." elementConfig="..." value="..." />
         <Input
           inputtype="input"
           type="email"
