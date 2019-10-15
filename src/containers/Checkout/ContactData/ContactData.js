@@ -83,9 +83,13 @@ class ContactData extends React.Component {
             { value: 'cheapest', displayValue: 'Cheapest' }
           ]
         },
-        value: ''
+        value: 'fastest',
+        // validation: {} => Permet de changer de valeur sans erreur dans le select car retourne undefined. L'objet validation renseigne les règles de validation et s'il n'y en a pas alors, on le laisse vide
+        validation: {},
+        valid: true
       }
     },
+    forIsValid: false,
     loading: false
   };
 
@@ -118,6 +122,10 @@ class ContactData extends React.Component {
 
   checkValidity = (value, rules) => {
     let isValid = true;
+    // Méthode alternative au validation: {} pour le select. On peut laisser les 2 par sécurité.
+    if (!rules) {
+      return true;
+    }
     // Sans le && isValid, si une condition est bonne alors isValid sera true automatiquement. Désormais, toutes les rules doivent être true
     if (rules.required) {
       isValid = value.trim() !== '' && isValid;
@@ -147,8 +155,15 @@ class ContactData extends React.Component {
     );
     updatedFormElement.touched = true;
     updatedOrderForm[inputIdentifier] = updatedFormElement;
-    console.log(updatedFormElement);
-    this.setState({ orderForm: updatedOrderForm });
+
+    let formIsValid = true;
+    for (let inputIdentifier in updatedOrderForm) {
+      // Si on ne rajoute pas && formIsValid, seul le dernier check de la loop serait pris en compte pour déterminer la validité globale du formulaire. Avec, on vérifie le booléen de la clé en question + si la validité générale du form est true.
+      // Ainsi, si l'un des deux est false, l'entrée et l'ensemble du formulaire seront false
+      formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
+    }
+
+    this.setState({ orderForm: updatedOrderForm, formIsValid: formIsValid });
   };
 
   render() {
@@ -173,7 +188,7 @@ class ContactData extends React.Component {
             changed={event => this.inputChangedHandler(event, formElement.id)}
           />
         ))}
-        <Button btnType="Success" clicked={this.orderHandler}>
+        <Button btnType="Success" disabled={!this.state.formIsValid}>
           Order
         </Button>
       </form>
