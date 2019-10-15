@@ -13,35 +13,40 @@ class ContactData extends React.Component {
         elementConfig: {
           type: 'text',
           placeholder: 'Your Name'
-        }
+        },
+        value: ''
       },
       street: {
         elementType: 'input',
         elementConfig: {
           type: 'text',
           placeholder: 'Street'
-        }
+        },
+        value: ''
       },
       zipCode: {
         elementType: 'input',
         elementConfig: {
           type: 'text',
           placeholder: 'ZIP Code'
-        }
+        },
+        value: ''
       },
       country: {
         elementType: 'input',
         elementConfig: {
           type: 'text',
           placeholder: 'Country'
-        }
+        },
+        value: ''
       },
       email: {
         elementType: 'input',
         elementConfig: {
           type: 'text',
           placeholder: 'Your mail'
-        }
+        },
+        value: ''
       },
       deliveryMethod: {
         elementType: 'select',
@@ -94,6 +99,7 @@ class ContactData extends React.Component {
         config: this.state.orderForm[key]
       });
     }
+    console.log(formElementsArray);
     let form = (
       <form>
         {formElementsArray.map(formElement => (
