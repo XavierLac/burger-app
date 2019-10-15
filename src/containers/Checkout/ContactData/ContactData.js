@@ -14,7 +14,11 @@ class ContactData extends React.Component {
           type: 'text',
           placeholder: 'Your Name'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: false
       },
       street: {
         elementType: 'input',
@@ -22,7 +26,11 @@ class ContactData extends React.Component {
           type: 'text',
           placeholder: 'Street'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: false
       },
       zipCode: {
         elementType: 'input',
@@ -30,7 +38,13 @@ class ContactData extends React.Component {
           type: 'text',
           placeholder: 'ZIP Code'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true,
+          minLength: 5,
+          maxLength: 5
+        },
+        valid: false
       },
       country: {
         elementType: 'input',
@@ -38,7 +52,11 @@ class ContactData extends React.Component {
           type: 'text',
           placeholder: 'Country'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: false
       },
       email: {
         elementType: 'input',
@@ -46,7 +64,11 @@ class ContactData extends React.Component {
           type: 'text',
           placeholder: 'Your mail'
         },
-        value: ''
+        value: '',
+        validation: {
+          required: true
+        },
+        valid: false
       },
       deliveryMethod: {
         elementType: 'select',
@@ -89,6 +111,21 @@ class ContactData extends React.Component {
       });
   };
 
+  checkValidity = (value, rules) => {
+    let isValid = true;
+    // Sans le && isValid, si une condition est bonne alors isValid sera true automatiquement. Désormais, toutes les rules doivent être true
+    if (rules.required) {
+      isValid = value.trim() !== '' && isValid;
+    }
+    if (rules.minLength) {
+      isValid = value.length >= rules.minLength && isValid;
+    }
+    if (rules.maxLength) {
+      isValid = value.length <= rules.maxLength && isValid;
+    }
+    return isValid;
+  };
+
   inputChangedHandler = (event, inputIdentifier) => {
     // Modification immutable du form donc on le clone. Avec le spread, seul le premier objet est cloné (name, street...). Si on modifie directement updatedOrderForm, les valeurs de seront directement mutées.
     // {name: {…}, street: {…}, zipCode: {…}, country: {…}, email: {…}, …}
@@ -99,7 +136,12 @@ class ContactData extends React.Component {
     // {elementType: "input", elementConfig: {…}, value: ""}
     const updatedFormElement = { ...updatedOrderForm[inputIdentifier] };
     updatedFormElement.value = event.target.value;
+    updatedFormElement.valid = this.checkValidity(
+      updatedFormElement.value,
+      updatedFormElement.validation
+    );
     updatedOrderForm[inputIdentifier] = updatedFormElement;
+    console.log(updatedFormElement);
     this.setState({ orderForm: updatedOrderForm });
   };
 
