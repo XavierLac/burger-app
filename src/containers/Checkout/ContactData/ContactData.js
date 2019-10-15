@@ -91,6 +91,20 @@ class ContactData extends React.Component {
       });
   };
 
+  inputChangedHandler = (event, inputIdentifier) => {
+    // Modification immutable du form donc on le clone. Avec le spread, seul le premier objet est cloné (name, street...). Si on modifie directement updatedOrderForm, les valeurs de seront directement mutées.
+    // {name: {…}, street: {…}, zipCode: {…}, country: {…}, email: {…}, …}
+    const updatedOrderForm = {
+      ...this.state.orderForm
+    };
+    // On passe par une 2nde étape de clonage en profondeur qui duplique l'intégralité de l'objet présent dans  le state. Ici, inputIdentifier = nom du champ (name, street...)
+    // {elementType: "input", elementConfig: {…}, value: ""}
+    const updatedFormElement = { ...updatedOrderForm[inputIdentifier] };
+    updatedFormElement.value = event.target.value;
+    updatedOrderForm[inputIdentifier] = updatedFormElement;
+    this.setState({ orderForm: updatedOrderForm });
+  };
+
   render() {
     const formElementsArray = [];
     for (let key in this.state.orderForm) {
@@ -99,7 +113,6 @@ class ContactData extends React.Component {
         config: this.state.orderForm[key]
       });
     }
-    console.log(formElementsArray);
     let form = (
       <form>
         {formElementsArray.map(formElement => (
@@ -108,6 +121,7 @@ class ContactData extends React.Component {
             elementType={formElement.config.elementType}
             elementConfig={formElement.config.elementConfig}
             value={formElement.config.value}
+            changed={event => this.inputChangedHandler(event, formElement.id)}
           />
         ))}
         <Button btnType="Success" clicked={this.orderHandler}>
